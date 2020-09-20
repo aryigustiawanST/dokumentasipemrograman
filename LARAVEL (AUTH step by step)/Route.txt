@@ -1,0 +1,27 @@
+LARAVEL
+
+Route::group(['prefix' => 'kartikahospital'], function () {
+    Route::get('/', 'CovidRegisterController@index');
+    Route::post('/store','CovidRegisterController@store');
+    
+    Route::post('/storepelengkap','CovidRegisterController@storepelengkap');
+    Route::get('/formpelengkap/{registerid}','CovidRegisterController@formpelengkap');
+
+    Route::get('/status','CovidRegisterController@status');
+
+    Route::get('/add','CovidRegisterController@add');
+    Route::get('/edit/{id}','CovidRegisterController@edit');
+    Route::post('/update','CovidRegisterController@update');
+    Route::get('/delete/{id}','CovidRegisterController@delete');
+
+    Route::get('/filepdf/{idktp}','CovidRegisterController@filepdf');
+});
+
+
+LUMEN
+
+
+Route::group(['prefix' => 'service'], function () {
+    Route::get('alldata', ['uses' => 'ServiceController@alldata']);
+    Route::post('statuspembayaran', ['uses' => 'ServiceController@statuspembayaran']);
+});

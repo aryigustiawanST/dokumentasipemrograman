@@ -1,0 +1,10 @@
+for ($i=0; $i < count($request->id); $i++) {
+
+            DB::table('iapi_config')
+                ->where('id',$request->id[$i])
+                ->update([
+                    'config'
+                    'config_value' => $request->config_name[$i],
+     
+            ]);
+        }

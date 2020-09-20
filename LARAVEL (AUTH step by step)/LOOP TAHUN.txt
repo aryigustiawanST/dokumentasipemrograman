@@ -1,0 +1,9 @@
+<select name="tahun" id="tahun" class="form-control input-sm mb-md" required>
+                        <?php 
+                        for($i=date('Y');$i>=2000;$i--){
+                            $s = isset($tahun)?$tahun:'';
+                            $c = $s==$i?'selected="selected"':'';
+                            echo "<option value='".$i."' $c >".$i."</option>";
+                        } 
+                        ?>
+                        </select>

@@ -1,0 +1,18 @@
+INSERT INTO `core_group_action_accesses` 
+(submenu_id, group_id, action_id, status) 
+VALUES 
+(zz, 1, 2, 1),
+(zz, 1, 3, 1),
+(zz, 1, 4, 1),
+(zz, 109, 2, 1),
+(zz, 109, 3, 1),
+(zz, 109, 4, 1),
+(zz, 110, 2, 1),
+(zz, 110, 3, 1),
+(zz, 110, 4, 1),
+(zz, 111, 2, 1),
+(zz, 111, 3, 1),
+(zz, 111, 4, 1),
+(zz, 115, 2, 1),
+(zz, 115, 3, 1),
+(zz, 115, 4, 1);

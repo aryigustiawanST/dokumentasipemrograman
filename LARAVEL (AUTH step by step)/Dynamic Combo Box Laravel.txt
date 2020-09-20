@@ -1,0 +1,307 @@
+Controller: 
+ADD:
+$vResto = DB::table('core_resto')->pluck("resto_name","resto_id");
+return view('menu/add_menu',compact('vResto'));
+
+
+public function getMenutype($restoid)
+    {
+        $menutypes = DB::table("core_menutype")->where("restoid", $restoid)->pluck("menutype_name","id");
+        return json_encode($menutypes);
+    }
+
+    public function getCategory($restoid)
+    {
+        $categories = DB::table("core_category")->where("restoid", $restoid)->pluck("category_name","id");
+        return json_encode($categories);
+    }
+
+
+EDIT:
+$vResto = DB::table('core_resto')->pluck("resto_name","resto_id");
+
+        // $vResto = DB::table('core_resto')->get();
+        foreach ($vMenu as $menu) {
+          $vMenuType = DB::table('core_menutype')->where('restoid', $menu->restoid)->pluck("menutype_name","id");
+          $vCategory = DB::table('core_category')->where('restoid', $menu->restoid)->pluck("category_name","id"); 
+        }
+
+
+VIEW:
+ADD:
+<div class="form-group">
+                      <label class="col-sm-2 control-label">Resto ID</label>
+                      <div class="col-sm-10">
+                        <select name="restoid" id="restoid" class="form-control dynamic" required="">
+                          <option value="">-- Select --</option>
+                          @foreach($vResto as $key => $resto)
+                            <option value="{{ $key }}">{{ $resto }}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>    
+
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label">Menu Type</label>
+                      <div class="col-sm-10">
+                        <select name="menu_type" id="menutype" class="form-control" required="">
+                          <option value="">-- Select --</option>                          
+                        </select>
+                      </div>
+                    </div>    
+
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label">Category</label>
+                      <div class="col-sm-10">
+                        <select name="menu_category" id="category" class="form-control" required="">
+                          <option value="">-- Select --</option>
+                        </select>
+                      </div>
+                    </div>        
+
+
+EDIT:
+<div class="form-group">
+                      <label class="col-sm-2 control-label">Resto ID</label>
+                      <div class="col-sm-10">
+                        <select name="restoid" class="form-control" required="">
+                          <option value="">-- Select --</option>
+                          @foreach($vResto as $key => $resto)
+                            @if($menu->restoid == $key)
+                              <option value="{{ $key }}" selected="">{{ $resto }}</option>
+                            @else
+                              <option value="{{ $key }}">{{ $resto }}</option>
+                            @endif
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>    
+
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label">Menu Type</label>
+                      <div class="col-sm-10">
+                        <select name="menu_type" id="menutype" class="form-control" required="">
+                          <option value="">-- Select --</option>                          
+                          @foreach($vMenuType as $key => $menutype)
+                            @if($menu->menu_type == $key)
+                              <option value="{{ $key }}" selected="">{{ $menutype }}</option>
+                            @else
+                              <option value="{{ $key }}" >{{ $menutype }}</option>
+                            @endif
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>    
+
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label">Category</label>
+                      <div class="col-sm-10">
+                        <select name="menu_category" id="category" class="form-control" required="">
+                          <option value="">-- Select --</option>
+                          @foreach($vCategory as $key => $category)
+                            @if($menu->menu_category == $key)
+                              <option value="{{ $key }}" selected="">{{ $category }}</option>
+                            @else
+                              <option value="{{ $key }}" >{{ $category }}</option>
+                            @endif
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>               
+
+
+
+
+    Route::get('/getcity/{provinceid}',array('as'=>'penghulu.getcity','uses'=>'PenghuluController@getCity'));
+Route::get('/getkua/{cityid}',array('as'=>'penghulu.getkua','uses'=>'PenghuluController@getKua'));
+
+
+PROVINSI ------------------------ KOTA ------------------------ KUA
+=============================================================================
+VIEW
+=============================================================================											<select name="provinceid" id="provinceid" class="form-control">
+												<option value="allprovince">SEMUA PROVINSI</option>
+												@foreach($vProvince as $key => $prov)
+						                            <option value="{{ $key }}">{{ $prov }}</option>
+						                        @endforeach
+											</select>
+											<select name="cityid" class="form-control">
+												<option value="allcity">SEMUA KABUPATEN/KOTA</option>
+											</select>
+
+	<select name="kuaid" class="form-control">
+												<option value="allcity">SEMUA KUA</option>
+											</select>
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script> 
+
+  <script type="text/javascript">
+    jQuery(document).ready(function ()
+    {
+      jQuery('select[name="provinceid"]').on('change',function(){
+         var provID = jQuery(this).val();
+         if(provID)
+         {
+            jQuery.ajax({
+               url : 'getcity/' +provID,
+               type : "GET",
+               dataType : "json",
+               success:function(data)
+               {
+                  console.log(data);
+                  jQuery('select[name="cityid"]').empty();
+                  jQuery('select[name="cityid"]').append('<option value="allcity">SEMUA KABUPATEN/KOTA</option>');
+                  jQuery('select[name="kuaid"]').empty();
+                  jQuery('select[name="kuaid"]').append('<option value="allkua">SEMUA KUA</option>');
+                  jQuery.each(data, function(key,value){
+                     $('select[name="cityid"]').append('<option value="'+ key +'">'+ value +'</option>');
+                  });
+               }
+            });
+         } 
+         else
+         {
+            $('select[name="cityid"]').empty();
+            $('select[name="cityid"]').append('<option value="allcity">SEMUA KABUPATEN/KOTA</option>');
+         }
+
+      });
+
+      jQuery('select[name="cityid"]').on('change',function(){
+         var cityID = jQuery(this).val();
+         if(cityID)
+         {                                
+            jQuery.ajax({
+               url : 'getkua/' +cityID,
+               type : "GET",
+               dataType : "json",
+               success:function(data)
+               {
+                  console.log(data);
+                  jQuery('select[name="kuaid"]').empty();
+                  jQuery('select[name="kuaid"]').append('<option value="allkua">SEMUA KUA</option>');
+                  jQuery.each(data, function(key,value){
+                     $('select[name="kuaid"]').append('<option value="'+ key +'">'+ value +'</option>');
+                  });
+               }
+            });
+         } 
+         else
+         {
+            $('select[name="kuaid"]').empty();
+            $('select[name="kuaid"]').append('<option value="allkua">SEMUA KUA</option>');
+         }
+
+      });
+    });
+  </script>
+
+
+
+=============================================================================
+CONTROLLER
+=============================================================================
+
+public function index()
+    {
+       $vProvince = DB::table('iapi_province')
+            ->orderBy('province_title', 'ASC')
+            ->pluck("province_title","province_id")
+            ->where('is_trash', '=', 0);
+        return view('penghulu',compact('vProvince'));
+    }
+
+    public function getCity($provinceid)
+    {
+        $vCity = DB::table("iapi_city")->where("city_province", $provinceid)->pluck("city_title","city_id");
+        return json_encode($vCity);
+    }
+
+    public function getKua($cityid)
+    {
+        $vKua = DB::table("master_kua")->where("kua_city_id", $cityid)->pluck("kua_title","kua_id");
+        return json_encode($vKua);
+    }
+
+	
+public function edit(Request $request){
+
+	$provincesid = $request->provinceid;
+        $citiesid = $request->cityid;
+        $kuasid = $request->kuaid;
+	
+	$vProvince = DB::table('iapi_province')
+            ->orderBy('province_title', 'ASC')
+            ->pluck("province_title","province_id")       
+            ->where('is_trash', '=', 0);
+
+	if (!$request->provinceid) {
+
+            $vCity = $vKua = "";
+
+        } else {
+
+            $vCity = DB::table('iapi_city')
+                ->orderBy('city_title', 'ASC')
+                ->where('is_trash', '=', 0)
+                ->where('city_province', '=', $request->provinceid)
+                ->get();
+           
+            $vKua = DB::table('master_kua')
+                ->orderBy('kua_title', 'ASC')
+                ->where('is_trash', '=', 0)
+                ->where('kua_province_id', '=', $request->provinceid)
+                ->where('kua_city_id', '=', $request->cityid)
+                ->get();
+        }       
+
+	return view('datapenghulu',compact('vProvince','vCity', 'vKua', 'vPenghulu', 'vTotalPenghulu', 'provincesid', 'citiesid', 'kuasid', 'title'));
+ 
+}
+
+=======================================================================
+VIEW EDIT
+=======================================================================
+
+<select name="provinceid" id="provinceid" class="input-xlarge">
+                  <option value="">SEMUA PROVINSI</option>
+                  @foreach($vProvince as $key => $prov)
+                    @if($provincesid == $key)
+                                    <option value="{{ $key }}" selected="">{{ $prov }}</option>
+                                  @else
+                                    <option value="{{ $key }}" >{{ $prov }}</option>
+                                  @endif
+                              @endforeach
+                </select>
+
+
+
+
+<select name="cityid" id="cityid" class="input-xlarge">
+                  <option value="">SEMUA KABUPATEN/KOTA</option>
+                  @if(!empty($provincesid))
+                  @foreach($vCity as $city)
+                    @if($citiesid == $city->city_id)
+                                    <option value="{{ $city->city_id }}" selected="">{{ $city->city_title }}</option>
+                                  @else
+                                    <option value="{{ $city->city_id }}" >{{ $city->city_title }}</option>
+                                  @endif
+                              @endforeach
+                              @endif
+                </select>
+
+
+
+<select name="kuaid" id="kuaid" class="input-xlarge">
+                  <option value="">SEMUA KUA</option>
+                  @if(!empty($provincesid) and !empty($citiesid))
+                  @foreach($vKua as $kua)
+                    @if($kuasid == $kua->kua_id)
+                                    <option value="{{ $kua->kua_id }}" selected="">{{ $kua->kua_title }}</option>
+                                  @else
+                                    <option value="{{ $kua->kua_id }}" >{{ $kua->kua_title }}</option>
+                                  @endif
+                              @endforeach
+                              @endif
+                </select>

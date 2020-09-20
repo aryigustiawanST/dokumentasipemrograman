@@ -1,0 +1,18 @@
+Logout lokasi:
+/var/www/html/pilih/vendor/laravel/framework/src/Illuminate/Auth/SessionGuard.php
+
+use Cookie; 
+
+$minutes = 360;
+SET:
+Cookie::queue(Cookie::make('cookieName', 'value', $minutes));
+
+Get: 
+$value = $request->cookie('cookieName'); or $value = Cookie::get('cookieName');
+
+Forget/remove cookie: 
+Cookie::queue(Cookie::forget('cookieName'));
+
+Check if cookie exist: 
+Cookie::has('cookiename'); or 
+$request->hasCookie('cookiename') will return true or false

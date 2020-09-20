@@ -1,0 +1,23 @@
+tambahin di composer.json
+
+"autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ],
+        "files": [
+            "app/Helpers/Helper.php"
+        ]
+    },
+
+
+
+composer dump-autoload
+
+
+di controller tambahin
+
+namespace App\Helpers;

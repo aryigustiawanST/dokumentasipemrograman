@@ -1,0 +1,55 @@
+INSTALL TEXT TO IMAGE or IMAGE:
+
+php composer.phar require intervention/image
+
+config/app.php:
+Intervention\Image\ImageServiceProvider::class
+'Image' => Intervention\Image\Facades\Image::class
+
+php artisan vendor:publish --provider="Intervention\Image\ImageServiceProviderLaravelRecent"
+
+php artisan config:publish intervention/image
+
+example:
+$nama = str_replace(" ","",$request->judul);
+        $namaFile = $request->userid.'_'.date("Y").'_'.$nama.'.jpg';
+
+        $img = Image::make('ogimage/back_.jpg')->resize(600, 340);
+        
+        $img->text($request->judul, 30, 60, function($font) {
+            $font->file('ogimage/CALIBRIB.TTF');
+            $font->size(22);
+            $font->color('#2F318B');
+            $font->align('left');
+            $font->valign('center');
+            $font->angle(0);  
+        });
+
+        $img->text('Pilih mana?', 30, 120, function($font) {
+            $font->file('ogimage/CALIBRIL.TTF');
+            $font->size(18);
+            $font->color('#F08519');
+            $font->align('left');
+            $font->valign('center');
+            $font->angle(0);  
+        });
+
+        $img->text($request->jawaban1, 55, 195, function($font) {
+            $font->file('ogimage/CALIBRIL.TTF');
+            $font->size(22);
+            $font->color('#000000');
+            $font->align('left');
+            $font->valign('center');
+            $font->angle(0);  
+        });
+
+        $img->text($request->jawaban2, 55, 228, function($font) {
+            $font->file('ogimage/CALIBRIL.TTF');
+            $font->size(22);
+            $font->color('#000000');
+            $font->align('left');
+            $font->valign('center');
+            $font->angle(0);  
+        });
+
+        $img->save('ogimage/'.$namaFile);  

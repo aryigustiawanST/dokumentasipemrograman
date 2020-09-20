@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+	{!! Form::open(['action' => 'CovidRegisterController@tesstore','method' => 'POST', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal bordered-group', 'id' => 'commentForm', 'role' => 'form']) !!}
+	<input type="radio" name="dirawat_di_rs" value="TRUE" required="">Ya
+    <input type="radio" name="dirawat_di_rs" value="FALSE" required="">Tidak
+
+    <div id="pasien1" class="desc" style="display: none">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Tanggal Masuk</label>
+          <div class="col-sm-10">
+              <input id="date2" value="1231" type="text" name="dirawat_tglmasuk" class="form-control" placeholder="30/12/1999">
+          </div>
+        </div>   
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Nama RS</label>
+          <div class="col-sm-10">
+              <input type="text" name="dirawat_namars" class="form-control">
+          </div>
+        </div>   
+     </div>
+	
+    <button type="submit">submit</button>
+    {!! Form::close() !!}
+
+	<script type="text/javascript">
+	 if($('#dirawat').is(':checked')) {
+                  $(".pasien").show();
+              } else {
+                  $(".pasien").hide();
+              }           
+
+		$(document).ready(function() {
+		    $("input[name$='dirawat_di_rs']").click(function() {
+		        var test = $(this).val();
+			    if(test == 'TRUE'){
+			        $(".desc").show();
+
+			    }
+			    if(test == 'FALSE'){
+			        $(".desc").hide();
+			    }
+		    });
+		});
+	</script>
+
+</body>
+</html>

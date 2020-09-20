@@ -1,0 +1,51 @@
+install storage to view image
+php artisan storage:link
+view: 
+{{ asset('storage/upload/resto-logo/'.$resto->resto_logo) }}
+
+controller:
+ if($request->hasFile('resto_logo')){
+            $fileNameWithExt = $request->file('resto_logo')->getClientOriginalName();
+            $filename = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('resto_logo')->getClientOriginalExtension();
+
+            $fileLogo = $request->resto_name.'_'.$filename.'.'.$extension;
+            request()->file('resto_logo')->storeAs('public/upload/resto-logo', $fileLogo);
+        }else {
+            $fileLogo = 'noimage.jpg';
+        }
+
+
+==========================================================================
+
+LUMEN
+if($request->file('vendor_photo'))
+        {
+           $file = $request->file('vendor_photo')->getClientOriginalName();
+           // $date = new DateTime();
+           $d = date('Ymd').$file;
+           $destinationPath ="images/vendor/";
+           $request->file('vendor_photo')->move($destinationPath, $d);
+        }
+        else 
+        {
+            $d = '';
+        }
+
+=============================================================================
+
+UPLOAD MULTIPLE FILE 
+
+// vfile --> name in text input
+if (($request->has('vfile'))) {
+                    $files = $request->file('vfile');
+          
+                    $destinationPath = storage_path() . '/app/public/';
+                    foreach ($files as $file) {
+                        $fileName = $file->getClientOriginalName();
+                        $extension = $file->getClientOriginalExtension();
+                        $storeName = $fileName . '.' . $extension;
+                        // Store the file in the disk 
+                        $file->move($destinationPath, $storeName);
+                    }
+                }

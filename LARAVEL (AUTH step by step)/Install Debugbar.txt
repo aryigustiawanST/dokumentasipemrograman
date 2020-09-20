@@ -1,0 +1,38 @@
+composer require barryvdh/laravel-debugbar --dev
+
+========================================================
+
+tambahin di config/app.php :
+
+Barryvdh\Debugbar\ServiceProvider::class,
+
+'Debugbar' => Barryvdh\Debugbar\Facade::class,
+
+========================================================
+
+php artisan vendor:publish --provider="Barryvdh\Debugbar\ServiceProvider"
+
+========================================================
+
+FOR LUMEN
+
+bootstrap/app.php:
+if (env('APP_DEBUG')) {
+ $app->register(Barryvdh\Debugbar\LumenServiceProvider::class);
+}
+
+To change the configuration, copy the file to your config folder and enable it:
+
+$app->configure('debugbar');
+
+========================================================
+
+3 59 745
+
+========================================================
+
+
+========================================================
+
+
+========================================================

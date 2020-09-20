@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Cartalyst\Sentinel\Laravel\Facades\Activation;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Sentinel;
+use DateTime;
+use Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
+use File;
+
+
+class InstansiController extends Controller
+{
+    public function index() {
+      
+      $instansi = DB::table('instansi_core')->get();
+      
+      return view('admin/pages/instansi/instansi',['instansi' => $instansi]);
+    }
+
+    public function tambah()
+    { 
+        return view('admin/pages/instansi/tambah');
+    }
+
+    public function store(Request $request)
+    { 
+        $this -> validate($request, [
+          'instansi_name' => 'required',
+          'jenis_instansi' => 'required',
+          'email' => 'required',
+          'password' => 'required',
+        ]);
+
+        DB::table('instansi_core')->insert([
+          'instansi_name' => $request->instansi_name,
+          'jenis_instansi' => $request->jenis_instansi,
+          'email' => $request->email,
+          'password' => Hash::make($request->password),
+        ]);
+
+       return redirect('admin/instansi')->with('success', 'Successfully Insert');
+    }
+
+    public function edit($id)
+    {
+        $instansi = DB::table('instansi_core')
+            ->where('id',$id)
+            ->get();
+        
+        return view('admin/pages/instansi/edit',['instansi' => $instansi]);
+    }
+
+    public function update(Request $request)
+    {     
+        $this -> validate($request, [
+          'instansi_name' => 'required',
+          'jenis_instansi' => 'required',
+          'email' => 'required',
+          'password' => '',
+        ]);
+
+        if (empty($request->password)) {
+            $pass = $request->password_old;            
+        } else {
+            $pass = Hash::make($request->password);
+        }
+
+        DB::table('instansi_core')->where('id',$request->id)->update([
+          'instansi_name' => $request->instansi_name,
+          'jenis_instansi' => $request->jenis_instansi,
+          'email' => $request->email,
+          'password' => $pass,
+        ]);
+
+        return redirect('admin/instansi')->with('success', 'Successfully Updated');
+    }
+    
+    public function hapus($id)
+    {
+        DB::table('instansi_core')->where('id',$id)->delete();
+        return redirect('admin/instansi')->with('success', 'Successfully Delete');
+    }
+
+}

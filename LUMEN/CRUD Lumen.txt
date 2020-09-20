@@ -1,0 +1,231 @@
+$results = app('db')->select("SELECT psikolog_core.*, users.email FROM psikolog_core 
+            LEFT JOIN users ON users.id = psikolog_core.userid
+            WHERE status = 'available'");
+
+
+<?php
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Psikolog;
+use App\PsikologComment;
+
+class PsikologController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $data = app('db')->select("SELECT *, 'http://psikolog.allsmart.id/images/psikolog/'||foto as foto FROM psikolog_core"); 
+        return response()->json($data);
+    }
+
+    public function status()
+    {
+        $results = app('db')->select("SELECT psikolog_core.*, users.email FROM psikolog_core 
+            LEFT JOIN users ON users.id = psikolog_core.userid
+            WHERE status = 'available'");
+
+        if (!($results)) {
+            return response()->json(['message' => "No Data Found!"], 404);
+        } else {
+            return response()->json($results);
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $this->validate($request,[
+            "userid" => 'required',
+            "nama" => 'required',
+            "foto" => 'required|image',
+            "Pendidikan" => 'required',
+            "Spesialis" => 'required',         
+            "deskripsi" => '',
+        ]);
+
+        if($request->file('foto'))
+        {
+           $file = $request->file('foto')->getClientOriginalName();
+           // $date = new DateTime();
+           $d = date('Ymd').$file;
+           $destinationPath ="images/";
+           $request->file('foto')->move($destinationPath, $d);
+        }
+        else 
+        {
+            $d = '';
+        }
+        
+        $proses = Psikolog::create([
+            'userid' => $request->userid,
+            'nama' => $request->nama,
+            'foto' => $d,
+            'Pendidikan' => $request->Pendidikan,
+            'Spesialis' => $request->Spesialis,
+            'deskripsi' => $request->deskripsi,
+        ]);
+
+        if ($proses) {
+            $result = array(
+                "userid" => true,
+                "nama" => true,
+                "foto" => true,
+                "Pendidikan" => true,
+                "Spesialis" => true,      
+                "deskripsi" => true,
+                "message" => 'Sukses Menyimpan',
+                // "payload" => $proses->all()
+            );
+        } else {
+            $result = array(
+                "userid" => false,
+                "nama" => false,
+                "foto" => false,
+                "Pendidikan" => false,
+                "Spesialis" => false,
+                "deskripsi" => false,
+                "message" => 'Gagal Menyimpan',
+                // "payload" => $proses->all()
+            );
+        }
+        return response()->json($result);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+         $this->validate($request,[
+            "userid" => 'required',
+            "nama" => 'required',
+            "foto" => 'required|image',
+            "Pendidikan" => 'required',
+            "Spesialis" => 'required',
+            "deskripsi" => '',
+        ]);
+
+        if($request->file('foto'))
+        {
+           $file = $request->file('foto')->getClientOriginalName();
+           // $date = new DateTime();
+           $d = date('Ymd').$file;
+           $destinationPath ="images/";
+           $request->file('foto')->move($destinationPath, $d);
+        }
+        else 
+        {
+            $d = '';
+        }
+
+        $update = Psikolog::find($id);
+        $update->userid = $request->userid;
+        $update->nama = $request->nama;
+        $update->foto = $d;
+        $update->Pendidikan = $request->Pendidikan;
+        $update->Spesialis = $request->Spesialis;
+        $update->deskripsi = $request->deskripsi;
+
+        $update->save();
+        if ($update) {
+            $result = array(
+                "userid" => true,
+                "nama" => true,
+                "foto" => true,
+                "Pendidikan" => true,
+                "Spesialis" => true,    
+                "deskripsi" => true,   
+                "message" => 'Sukses Update',
+                // "payload" => $update->all()
+            );
+        } else {
+            $result = array(
+                "userid" => false,
+                "nama" => false,
+                "foto" => false,
+                "Pendidikan" => false,
+                "Spesialis" => false,
+                "deskripsi" => false,
+                "message" => 'Gagal Update',
+                // "payload" => $update->all()
+            );
+        }
+       return response()->json($result);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        Psikolog::destroy($id);
+        return response()->json([
+            "message"=>'Data Dihapus'
+        ]);
+    }
+
+    public function comment(Request $request)
+    {
+        $this->validate($request,[
+            "psikologid" => 'required',
+            "comment" => 'required',
+            "consumertoken" => 'required',
+            "viewable" => 'required',
+        ]);
+
+        $proses = PsikologComment::create([
+            'psikologid' => $request->psikologid,
+            'comment' => $request->comment,
+            'consumertoken' => $request->consumertoken,
+            'viewable' => $request->viewable,
+        ]);
+
+        if ($proses) {
+            $result = array(
+                "psikologid" => true,
+                "comment" => true,
+                "consumertoken" => true,
+                "viewable" => true,
+                "message" => 'Sukses Menyimpan',
+            );
+        } else {
+            $result = array(
+                "psikologid" => false,
+                "comment" => false,
+                "consumertoken" => false,
+                "viewable" => false,
+                "message" => 'Gagal Menyimpan',
+            );
+        }
+        return response()->json($result);
+    }
+}

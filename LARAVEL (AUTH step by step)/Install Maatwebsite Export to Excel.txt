@@ -1,0 +1,85 @@
+composer require maatwebsite/excel
+
+Config/App.php
+
+Provider:
+Maatwebsite\Excel\ExcelServiceProvider::class,
+
+Aliases:
+'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+
+php artisan vendor:publish --provider="Maatwebsite\Excel\ExcelServiceProvider"
+
+php artisan make:export SiswaExport --model=Siswa
+
+=============================================================================
+
+Edit Source di: app/Export/SiswaExport.php
+Siswa Export File:
+<?php
+
+namespace App\Exports;
+
+use App\Siswa;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\Exportable;
+
+class SiswaExport implements FromCollection
+{
+    use Exportable;
+
+    public function __construct(string $instansiname) //string for String, int for integer
+    {
+        $this->instansiname = $instansiname;
+    }
+
+    public function collection()
+    {
+        return Siswa::all()->where('instansi', $this->instansiname);
+    }
+}
+
+=============================================================================
+
+Route:
+ 	Route::get('/exportexcel/{instansiname}', 'HomeController@exportexcel');
+
+=============================================================================
+
+Controller:
+	use App\Siswa;
+	use App\Exports\SiswaExport;
+	use Maatwebsite\Excel\Facades\Excel;
+
+	public function exportexcel()
+    	{
+        	return Excel::download(new SiswaExport, 'siswa.xlsx');
+    	}
+
+	ATAU
+
+	public function exportexcel($instansiname)
+    	{
+
+        	return (new SiswaExport($instansiname))->download('Siswa '.$instansiname.'.xlsx');
+    	}
+=============================================================================
+
+Model:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Siswa extends Model
+{
+    protected $table = 'dashboard_customer';
+    protected $fillable = [];
+    protected $guarded = ['consumertoken'];
+}
+
+=============================================================================
+
+View:
+<a href="/home/exportexcel/{{ Request::segment(3) }}" class="btn btn-success">Download Excel</a><br/><br/>

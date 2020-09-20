@@ -1,0 +1,272 @@
+<?php
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Stasiun;
+
+class StasiunController extends Controller
+{
+    
+
+-------- GET ALL DATA AND BY ID PAKAI INI
+
+public function consultant(Request $request)
+    {
+
+        $query = app('db')->select("SELECT * FROM consultant_core");   
+
+        if(!empty($query)) {
+
+            foreach($query as $q) {
+
+                $userDetail = $q->user_detail;
+                $dJson = json_decode($userDetail,TRUE);
+                
+                $output = array(
+                    'username' => $q->username,
+                    'email' => $q->email,
+                    'linkedin_email' => $q->linkedin_email,
+                    'google_email' => $q->google_email,
+                    'user_detail' => $dJson,                    
+                );
+
+                $all[] = $output;
+
+            }
+
+            $results = array(
+                "status" => 'sukses',
+                "json_data" => $all,
+            );
+
+        } else {
+
+            $results = array(
+                "status" => 'gagal',
+                "json_data" => array(
+                    "message" => "tidak ada data"
+                ),
+            );
+
+        }
+
+        return response()->json($results);
+    }
+
+=========================================================================
+-------- GET BY ID	
+
+     public function projectlist(Request $request)
+    {
+
+        $this->validate($request, [
+            'consultee_id' => 'required',
+        ]);
+
+        $query = app('db')->select("SELECT * FROM module_project_projectcore WHERE consultee_id = $request->consultee_id");   
+
+
+        if(!empty($query)) {
+
+            foreach($query as $q){
+
+                $detail = $q->project_detail;
+                $json = json_decode($detail,TRUE);
+                
+                $results = array(
+                    'status' => 'sukses',
+                    'json_data' => array(
+                        'project_name' => $q->project_name,
+                        'project_vendor' => $q->project_vendor,
+                        'project_description' => $q->project_description,
+                        'current_scope' => $q->current_scope,
+                        'project_detail' => $dJson
+                    ),                    
+                );
+
+            }
+
+        } else {
+
+            $results = array(
+                "status" => 'gagal',
+                "json_data" => array(
+                    "message" => "tidak ada data"
+                ),
+            );
+
+        }
+
+        return response()->json($results);
+    }
+
+=========================================================================
+
+     public function addsumber(Request $request)
+    {
+        $this->validate($request, [
+            'tipe_sumber' => 'required',
+            'alamat_url' => 'required',
+            'username' => 'required', 
+            'password' => 'required',
+        ]);        
+
+        $proses = ConfigSumber::create([
+            'tipe_sumber' => $request->tipe_sumber,
+            'alamat_url' => $request->alamat_url,
+            'username' => $request->username,
+            'password' => $request->password,
+        ]);        
+
+        if ($proses) {
+            
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'jsondata' => array(
+                        'id' => DB::getPdo()->lastInsertId(),
+                        'tipe_sumber' => $request->tipe_sumber,
+                        'alamat_url' => $request->alamat_url,
+                        'username' => $request->username,
+                        'password' => $request->password,	
+                    ),
+                ], 200, 
+                ['X-Header-One' => 'Header Value']
+            );     
+            
+        } else {
+
+            return response()->json(
+                [
+                    'status' => 'gagal',
+                    'jsondata' => 'null',
+                ], 601, 
+                ['X-Header-One' => 'Header Value']
+            );     
+
+        }
+        
+    }
+
+=========================================================================
+
+    public function update(Request $request)
+    {
+        $this->validate($request, [
+            'transaction_id' => 'required',
+        ]);
+
+        $query = app('db')->select("SELECT * FROM module_transaction_core
+        WHERE transaction_id = $request->transaction_id"); 
+
+        if(!empty($query)) {
+
+            $update = Transaction::find($request->transaction_id);
+            $update->status = 3;
+            $update->save();
+
+            $results = array(
+                'status' => 'sukses',
+                'json_data' => array(
+                    'transaction_id' => $request->transaction_id,
+                    'status' => 3,
+                    'room_id' => 'room-'.$request->transaction_id,
+                ),                    
+            );            
+
+            return response()->json($results);
+                
+        } else {
+
+            return response()->json(
+                [
+                    'status' => 'gagal',
+                    'jsondata' => array(
+                        "message" => "tidak ada data"
+                    ),
+                ], 400, 
+                ['X-Header-One' => 'Header Value']
+            );   
+
+        }
+
+    }
+
+=========================================================================
+
+    public function projectdelete(Request $request, $id)
+    {
+        Project::destroy($id);
+        return response()->json([
+            "status" => 'sukses',
+            "json_data" => null,
+        ]);
+    }
+
+}
+
+
+
+========================================================================
+
+
+CREATE TABLE orders (
+	id serial NOT NULL PRIMARY KEY,
+	info json NOT NULL
+);
+
+INSERT INTO orders (info)
+VALUES('{ "customer": "John Doe", "items": {"product": "Beer","qty": 6}}');
+
+INSERT INTO orders (info)
+VALUES('{ "customer": "Lily Bush", "items": {"product": "Diaper","qty": 24}}'),
+      ('{ "customer": "Josh William", "items": {"product": "Toy Car","qty": 1}}'),
+      ('{ "customer": "Mary Clark", "items": {"product": "Toy Train","qty": 2}}');
+
+
+uses the operator -> to get all customers in form of JSON:
+
+SELECT info -> 'customer' AS customer
+FROM orders;
+
+uses operator ->> to get all customers in form of text:
+
+SELECT info ->> 'customer' AS customer
+FROM orders;
+
+Because -> operator returns a JSON object, you can chain it with the operator ->> to retrieve a specific node. For example, the following statement returns all products sold:
+
+SELECT info -> 'items' ->> 'product' as product
+FROM orders
+ORDER BY product;
+
+SELECT info ->> 'customer' AS customer
+FROM orders
+WHERE info -> 'items' ->> 'product' = 'Diaper';
+
+SELECT info ->> 'customer' AS customer,
+	info -> 'items' ->> 'product' AS product
+FROM orders
+WHERE CAST ( info -> 'items' ->> 'qty' AS INTEGER) = 2
+
+
+SELECT 
+   MIN (CAST (info -> 'items' ->> 'qty' AS INTEGER)),
+   MAX (CAST (info -> 'items' ->> 'qty' AS INTEGER)),
+   SUM (CAST (info -> 'items' ->> 'qty' AS INTEGER)),
+   AVG (CAST (info -> 'items' ->> 'qty' AS INTEGER))
+FROM orders;
+
+
+===========================================================================
+
+The json_each() function allows us to expand the outermost JSON object into a set of key-value pairs. See the following statement:
+
+SELECT json_each (info)
+FROM orders;
+
+To get a set of keys in the outermost JSON object, you use the json_object_keys() function. The following query returns all keys of the nested items object in the info column
+
+SELECT json_object_keys (info->'items')
+FROM orders;

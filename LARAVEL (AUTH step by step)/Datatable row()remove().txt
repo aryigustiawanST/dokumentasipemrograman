@@ -1,0 +1,25 @@
+var table = $('#example').DataTable();
+ 
+$('#example tbody').on( 'click', 'img.icon-delete', function () {
+    table
+        .row( $(this).parents('tr') )
+        .remove()
+        .draw();
+} );
+
+
+
+
+
+var table1 = $('#example1').DataTable();
+var table2 = $('#example2').DataTable();
+ 
+$('#example tbody').on( 'click', 'img.icon-transfer', function () {
+    var row = table1.row( $(this).parents('tr') );
+    var rowNode = row.node();
+    row.remove();
+ 
+    table2
+        .row.add( rowNode )
+        .draw();
+} );

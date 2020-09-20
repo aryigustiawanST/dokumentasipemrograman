@@ -1,0 +1,61 @@
+$file_path = 'http://rapidtest.online/storage/upload/formulir/'.$request->no_ktp.'.pdf';
+
+        // SEND WHATSAPP
+        $key='779a3e3cbcdbcb9b5b399a023a09604acc8a43e722808c49'; 
+        $url='http://116.203.92.59/api/send_message'; // for message
+
+        $data = array(
+          "phone_no"=> $request->telepon,
+          "key"   =>$key,
+          "message" =>'Formulir pendaftaran anda berhasil disubmit.
+
+Nama: '.$request->nama.'
+Jenis Tes: '.$request->jenis_test.'
+Lokasi Tes: '.$request->lokasi_test.'
+Tanggal Kedatangan: '.$tgldatang.'
+Jam Kedatangan: '.$request->jam_datang.':00 WIB'
+
+        );
+
+        $data_string = json_encode($data);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, 0);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 360);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+          'Content-Type: application/json',
+          'Content-Length: ' . strlen($data_string))
+        );
+        echo $res=curl_exec($ch);
+        curl_close($ch);
+
+        $urlM='http://116.203.92.59/api/send_file_url'; // for file
+        // $url='http://116.203.92.59/api/send_image_url'; --> for image
+
+        $dataM = array(
+          "phone_no"=> $request->telepon,
+          "key"   =>$key,
+          "url"   =>$file_path, //for Image path
+        );
+
+        $data_stringM = json_encode($dataM);
+        $chM = curl_init($urlM);
+        curl_setopt($chM, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($chM, CURLOPT_POSTFIELDS, $data_stringM);
+        curl_setopt($chM, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($chM, CURLOPT_VERBOSE, 0);
+        curl_setopt($chM, CURLOPT_CONNECTTIMEOUT, 0);
+        curl_setopt($chM, CURLOPT_TIMEOUT, 360);
+        curl_setopt($chM, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($chM, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($chM, CURLOPT_HTTPHEADER, array(
+          'Content-Type: application/json',
+          'Content-Length: ' . strlen($data_stringM))
+        );
+        echo $res=curl_exec($chM);
+        curl_close($chM);

@@ -1,0 +1,11 @@
+setTimeout(function() {
+    $('#mydiv').fadeOut('fast');
+}, 1000);
+
+
+==========================================================================
+
+
+confirm delete in button
+
+onclick="return  confirm('Anda yankin ingin hapus data ini?')"

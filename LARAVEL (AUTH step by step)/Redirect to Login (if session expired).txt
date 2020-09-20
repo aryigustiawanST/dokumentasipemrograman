@@ -1,0 +1,12 @@
+App/Exceptions/Handler.php
+
+
+ public function render($request, Exception $exception)
+    {
+        // tambahan redirect to login if expired page
+        if ($exception instanceof \Illuminate\Session\TokenMismatchException) {            
+            return redirect('/login'); 
+        }
+
+        return parent::render($request, $exception);
+    }

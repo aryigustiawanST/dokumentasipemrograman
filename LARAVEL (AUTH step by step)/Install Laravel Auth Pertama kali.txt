@@ -1,0 +1,116 @@
+1. composer create-project --prefer-dist laravel/laravel blog
+2. composer install
+3. php artisan key:generate
+4. apt install npm
+5. npm install
+6. npm run dev
+7. composer require laravel/ui
+8. php artisan ui bootstrap --auth
+9. php artisan migrate
+
+=============================================================================
+LOGIN DENGAN USERNAME ATAU EMAIN TAMBAHKAN di:
+
+app/Http/Controllers/Auth/LoginController.php
+
+
+public function login(Request $request)
+    {   
+        $input = $request->all();
+  
+        $this->validate($request, [
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+  
+        $fieldType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        if(auth()->attempt(array($fieldType => $input['username'], 'password' => $input['password'])))
+        {
+            return redirect()->route('home');
+        }else{
+            return redirect()->route('login')
+                ->with('error','Email-Address And Password Are Wrong.');
+        }
+          
+    }
+
+JIKA PASSWORD DEFAULT MD5 TAMBAHKAN INI:
+
+ public function login(Request $request)
+    {   
+        $input = $request->all();
+
+        $this->validate($request, [
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+  
+        $fieldType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+
+        $user = User::where('username', $request->username)
+                ->where('password', md5($request->password))
+                ->first();
+
+        if($user && $user->password == md5($request->password) )
+        {
+
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            if(auth()->attempt(array($fieldType => $input['username'], 'password' => $input['password'])))
+            {
+                $user->save();
+                return redirect()->route('home');
+            
+            } else {
+                return redirect()->route('login')->with('error','Email-Address And Password Are Wrong.');
+            }
+
+        } else {
+
+            if(auth()->attempt(array($fieldType => $input['username'], 'password' => $input['password'])))
+            {
+                return redirect()->route('home');
+            
+            } else {
+                return redirect()->route('login')->with('error','Email-Address And Password Are Wrong.');
+            }
+
+        }
+          
+    }
+
+
+=============================================================================
+
+ganti default nama table untuk login
+
+App/user.php tambahin:
+protected $table = 'covid_users';
+
+=============================================================================
+
+install Form:
+add composer.json in require
+"laravelcollective/html" => "~6.0"
+composer update
+composer require laravelcollective/html
+
+{!! Form::open(['action' => 'MenuController@store','method' => 'POST', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) !!}
+
+{!! Form::close() !!}
+
+===========================================================================
+
+install sukses registrasi dan dikirim ke email:
+php artisan make:notification UserRegisteredSuccessfully
+
+=============================================================================
+
+php artisan config:clear --> clear configuration
+
+=============================================================================
+
+
+=============================================================================
