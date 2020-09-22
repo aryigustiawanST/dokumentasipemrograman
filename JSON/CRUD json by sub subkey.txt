@@ -1,0 +1,44 @@
+OLNY UPDATE DATA
+
+UPDATE user_core
+SET user_detail = jsonb_set(
+    user_detail,
+    '{alamat}'::text[],
+    (((user_detail -> 'alamat')-(SELECT i
+       FROM generate_series(0, jsonb_array_length(user_detail->'alamat')-1) AS i
+       WHERE (user_detail->'alamat'->i->>'idalamat' = '1')))::jsonb
+     ||
+      '{"idalamat":"1", "alamat1":"jakartah", "alamat2":"surabaya", "kodepos":"55674", "negara": "Indonesia", "jenis": "kantor", "x": "222", "y": "444"}'::jsonb))
+WHERE (user_detail ->> 'nohp') = '08123456789' AND id = 99;
+
+
+=================================================================
+INSERT DATA WITH UPDATE
+
+UPDATE user_core
+SET user_detail = jsonb_set(
+    user_detail,
+    '{alamat}'::text[],
+    (((user_detail -> 'alamat'))::jsonb
+     ||
+      '{"idalamat":"4", "alamat1":"b;la bladhasldhasld", "alamat2":"na,smdasjkd mhgasd", "kodepos":"55674", "negara": "Indonesia", "jenis": "kantor", "x": "222", "y": "444"}'::jsonb))
+WHERE (user_detail ->> 'nohp') = '08123456789' AND id = 99;
+
+===================================================================
+DELETE DATA WITH UPDATE
+
+UPDATE user_core
+SET user_detail = jsonb_set(
+    user_detail,
+    '{alamat}'::text[],
+    (((user_detail -> 'alamat')-(SELECT i
+       FROM generate_series(0, jsonb_array_length(user_detail->'alamat')-1) AS i
+       WHERE (user_detail->'alamat'->i->>'idalamat' = '3')))::jsonb	))
+WHERE (user_detail ->> 'nohp') = '08123456789' AND id = 99;
+
+====================================================================
+
+DELETE FROM USER_CONFIGURATIONS
+WHERE (user_detail ->> 'userid') = 'ihor@gmail.com'
+
+

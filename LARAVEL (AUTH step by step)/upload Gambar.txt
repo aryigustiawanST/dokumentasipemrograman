@@ -19,6 +19,7 @@ controller:
 ==========================================================================
 
 LUMEN
+
 if($request->file('vendor_photo'))
         {
            $file = $request->file('vendor_photo')->getClientOriginalName();
@@ -49,3 +50,30 @@ if (($request->has('vfile'))) {
                         $file->move($destinationPath, $storeName);
                     }
                 }
+
+===========================================================================
+
+UPLOAD FOTO JSON 
+
+
+        $photo =  '{';        
+        if($request->hasfile('photo_detail'))
+        {     
+            $i = 1;  
+            foreach($request->file('photo_detail') as $key => $imagesPD) 
+            {
+                $file = $imagesPD->getClientOriginalName();
+                $name = $file;
+                $destinationPath ="images/products/"; 
+                $imagesPD->move($destinationPath, $name);
+
+                $koma = ",";
+                    if(count($request->photo_detail) == $i) {
+                        $koma = " ";
+                    }
+                    $photo .='"'.$key.'":"'.$name.'"'.$koma;    
+                $i++;
+            } 
+            
+        } 
+        $photo .= '}';

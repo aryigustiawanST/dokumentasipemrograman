@@ -2,11 +2,11 @@ GET SUKSES
 
 return response()->json(
 	[
-		'status' => 'success'
+		'status' => 'success',
 		'jsondata' => array(
 			'parameter1' => $parameter1,	
 		),
-	], 600, 
+	], 400, 
 	['X-Header-One' => 'Header Value']
 );
 
