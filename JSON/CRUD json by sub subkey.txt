@@ -1,4 +1,4 @@
-OLNY UPDATE DATA
+ONLY UPDATE DATA
 
 UPDATE user_core
 SET user_detail = jsonb_set(
@@ -24,6 +24,16 @@ SET user_detail = jsonb_set(
       '{"idalamat":"4", "alamat1":"b;la bladhasldhasld", "alamat2":"na,smdasjkd mhgasd", "kodepos":"55674", "negara": "Indonesia", "jenis": "kantor", "x": "222", "y": "444"}'::jsonb))
 WHERE (user_detail ->> 'nohp') = '08123456789' AND id = 99;
 
+INSERT DATA WITH UPDATE IN SUB SUBKEY
+
+UPDATE module_project_projectquestion
+SET question = jsonb_set(
+    question,
+    '{Question,0,response,1000}'::text[],
+    '{"answer":"nothing", "rating":"", "trx_id":"", "create_date":"2020-09-18 19:00:00", "nama_konsultan": "aryi"}'::jsonb
+		)
+WHERE question @> '{"Question": [{"question_id": "vvgghh"}]}';
+
 ===================================================================
 DELETE DATA WITH UPDATE
 
@@ -40,5 +50,20 @@ WHERE (user_detail ->> 'nohp') = '08123456789' AND id = 99;
 
 DELETE FROM USER_CONFIGURATIONS
 WHERE (user_detail ->> 'userid') = 'ihor@gmail.com'
+
+====================================================================
+SELECT WHERE ID IN SUBKEY
+
+SELECT * FROM module_project_projectquestion WHERE question @> '{\"Question\": [{\"status\": \"open\"}]}'
+
+
+
+UPDATE module_project_projectquestion
+SET question = jsonb_set(
+    question,
+    '{Question,1000}'::text[],
+    '{"status":"close"}'::jsonb
+		)
+WHERE question @> '{"Question": [{"question_id": "1609141550"}]}' AND id_question = 3;
 
 

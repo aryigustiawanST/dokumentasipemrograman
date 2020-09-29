@@ -2,7 +2,7 @@ GET SUKSES
 
 return response()->json(
 	[
-		'status' => 'success',
+		'status' => 'gagal',
 		'jsondata' => array(
 			'parameter1' => $parameter1,	
 		),
