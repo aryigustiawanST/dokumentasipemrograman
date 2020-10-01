@@ -39,6 +39,77 @@ class SiswaExport implements FromCollection
     }
 }
 
+========================================================================
+
+FROM VIEW
+
+<?php
+
+namespace App\Exports;
+
+use App\Penghulu;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+
+
+class KuaPenghuluExport implements FromView, WithEvents, ShouldAutoSize
+{   
+
+    // public function daerah($idprov)
+    // {
+    //     $this->idprov = $idprov;
+    //     return $this;
+    // }
+
+    // public function city($idprov, $idcity)
+    // {
+    //     $this->idprov = $idprov;
+    //     $this->idcity = $idcity;
+    //     return $this;
+    // }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class    => function(AfterSheet $event) {
+                $cellRange = 'A1:V1'; // All headers
+                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(10);                
+            },
+        ];
+    }
+
+    public function view(): View
+    {
+        $provinceID = $this->idprov; 
+        $cityID = $this->idcity;
+        $kuaID = $this->idkua;
+
+        $allakses = allakses($provinceID, $cityID, $kuaID);
+
+        print_r($allakses);
+        exit();
+
+        $penghulu = $allakses['jPenghulu'];
+        $kota = $allakses['jKota'];
+        $kua = $allakses['jKua'];
+        $pangkat = $allakses['jPangkat'];
+        $jabatan = $allakses['jJabatan'];
+        $pendidikan = $allakses['jPendidikan'];
+        $totalPenghulu = $allakses['tPenghulu'];
+        $totalKua = $allakses['tKua'];
+
+        return view('backend.report.export.kuapenghulu', [
+            'jPenghulu' => $penghulu, 'jKota' => $kota, 'jKua' => $kua, 'jPangkat' => $pangkat, 'jJabatan' => $jabatan, 'jPendidikan' => $pendidikan, 'tPenghulu' => $totalPenghulu, 'tKua' => $totalKua
+        ]);
+    }
+
+}
+
 =============================================================================
 
 Route:

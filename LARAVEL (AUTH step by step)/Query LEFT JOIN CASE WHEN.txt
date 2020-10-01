@@ -1,0 +1,27 @@
+DB::table('iapi_pegawai')
+                ->select('iapi_pegawai.pegawai_nip', 
+                'iapi_pegawai.pegawai_fullname', 
+                'iapi_pegawai.pegawai_tanggallahir',
+                'iapi_pegawai.pegawai_handphone',  
+                'iapi_pegawai.pegawai_sk_penghulu', 
+                'iapi_pegawai.pegawai_tgl_sk_penghulu',
+                'iapi_pegawai.pegawai_pangkat',                 
+                // 'iapi_pegawai.pegawai_kategory_penghulu',
+                DB::raw('(CASE
+                    WHEN pegawai_kategory_penghulu = 1 THEN "Ahli Muda"
+                    WHEN pegawai_kategory_penghulu = 2 THEN "Ahli Madya"
+                    WHEN pegawai_kategory_penghulu = 3 THEN "Ahli Pertama"
+                    WHEN pegawai_kategory_penghulu = 4 THEN "Ahli Utama"
+                END) AS pegawai_kategory_penghulu'),
+                'iapi_province.province_title', 
+                'iapi_city.city_title', 
+                'master_kua.kua_title')
+                ->leftJoin('iapi_province', 'iapi_province.province_id', '=', 'iapi_pegawai.pegawai_province')
+                ->leftJoin('iapi_city', 'iapi_city.city_id', '=', 'iapi_pegawai.pegawai_city')
+                ->leftJoin('master_kua', 'master_kua.kua_id', '=', 'iapi_pegawai.pegawai_kua')
+                ->where('iapi_pegawai.pegawai_status', '=', 1)
+                ->where('iapi_pegawai.is_trash', '=', 0)
+                ->orderBy('iapi_province.province_title', 'ASC')
+                ->orderBy('iapi_city.city_title', 'ASC')
+                ->orderBy('master_kua.kua_title', 'ASC')
+                ->get();
