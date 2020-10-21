@@ -15,7 +15,7 @@ controller:
             $fileLogo = 'noimage.jpg';
         }
 
-
+getAkumulasi_dupak("bimas", $t, $idpenghulu, $idjenjang);
 ==========================================================================
 
 LUMEN
