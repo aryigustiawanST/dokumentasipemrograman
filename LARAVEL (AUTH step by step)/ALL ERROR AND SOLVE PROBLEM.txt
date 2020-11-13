@@ -14,3 +14,8 @@ tambahin disini config\database.php --> "mysql"
 
 
 ==========================================================================
+ERROR: 
+DOMDocument::loadHTML(): htmlParseStartTag: invalid element name in Entity, line: 45
+
+FIXED:
+<?php libxml_use_internal_errors(true); ?>

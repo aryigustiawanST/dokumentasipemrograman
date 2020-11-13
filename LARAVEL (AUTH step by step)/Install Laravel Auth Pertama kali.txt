@@ -9,7 +9,7 @@
 9. php artisan migrate
 
 =============================================================================
-LOGIN DENGAN USERNAME ATAU EMAIN TAMBAHKAN di:
+LOGIN DENGAN USERNAME ATAU EMAIL TAMBAHKAN di:
 
 app/Http/Controllers/Auth/LoginController.php
 
@@ -89,6 +89,7 @@ ganti default nama table untuk login
 App/user.php tambahin:
 protected $table = 'covid_users';
 
+protected $primaryKey = 'admin_id';
 =============================================================================
 
 install Form:

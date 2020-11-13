@@ -1,0 +1,62 @@
+composer require milon/barcode
+config/app.php
+	'provides' => 
+		Milon\Barcode\BarcodeServiceProvider::class
+
+	'aliases' => 
+		'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
+        	'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+
+
+composer.json
+
+"require": {
+    "milon/barcode": "^8.0"
+}
+
+
+Width and Height example
+echo DNS1D::getBarcodeSVG('4445645656', 'PHARMA2T',3,33);
+echo DNS1D::getBarcodeHTML('4445645656', 'PHARMA2T',3,33);
+echo '<img src="' . DNS1D::getBarcodePNG('4', 'C39+',3,33) . '" alt="barcode"   />';
+echo DNS1D::getBarcodePNGPath('4445645656', 'PHARMA2T',3,33);
+echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG('4', 'C39+',3,33) . '" alt="barcode"   />';
+
+COLOR
+echo DNS1D::getBarcodeSVG('4445645656', 'PHARMA2T',3,33,'green');
+echo DNS1D::getBarcodeHTML('4445645656', 'PHARMA2T',3,33,'green');
+echo '<img src="' . DNS1D::getBarcodePNG('4', 'C39+',3,33,array(1,1,1)) . '" alt="barcode"   />';
+echo DNS1D::getBarcodePNGPath('4445645656', 'PHARMA2T',3,33,array(255,255,0));
+echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG('4', 'C39+',3,33,array(1,1,1)) . '" alt="barcode"   />';
+
+1D Barcodes
+echo DNS1D::getBarcodeHTML('4445645656', 'C39');
+echo DNS1D::getBarcodeHTML('4445645656', 'C39+');
+echo DNS1D::getBarcodeHTML('4445645656', 'C39E');
+echo DNS1D::getBarcodeHTML('4445645656', 'C39E+');
+echo DNS1D::getBarcodeHTML('4445645656', 'C93');
+echo DNS1D::getBarcodeHTML('4445645656', 'S25');
+echo DNS1D::getBarcodeHTML('4445645656', 'S25+');
+echo DNS1D::getBarcodeHTML('4445645656', 'I25');
+echo DNS1D::getBarcodeHTML('4445645656', 'I25+');
+echo DNS1D::getBarcodeHTML('4445645656', 'C128');
+echo DNS1D::getBarcodeHTML('4445645656', 'C128A');
+echo DNS1D::getBarcodeHTML('4445645656', 'C128B');
+echo DNS1D::getBarcodeHTML('4445645656', 'C128C');
+echo DNS1D::getBarcodeHTML('44455656', 'EAN2');
+echo DNS1D::getBarcodeHTML('4445656', 'EAN5');
+echo DNS1D::getBarcodeHTML('4445', 'EAN8');
+echo DNS1D::getBarcodeHTML('4445', 'EAN13');
+echo DNS1D::getBarcodeHTML('4445645656', 'UPCA');
+echo DNS1D::getBarcodeHTML('4445645656', 'UPCE');
+echo DNS1D::getBarcodeHTML('4445645656', 'MSI');
+echo DNS1D::getBarcodeHTML('4445645656', 'MSI+');
+echo DNS1D::getBarcodeHTML('4445645656', 'POSTNET');
+echo DNS1D::getBarcodeHTML('4445645656', 'PLANET');
+echo DNS1D::getBarcodeHTML('4445645656', 'RMS4CC');
+echo DNS1D::getBarcodeHTML('4445645656', 'KIX');
+echo DNS1D::getBarcodeHTML('4445645656', 'IMB');
+echo DNS1D::getBarcodeHTML('4445645656', 'CODABAR');
+echo DNS1D::getBarcodeHTML('4445645656', 'CODE11');
+echo DNS1D::getBarcodeHTML('4445645656', 'PHARMA');
+echo DNS1D::getBarcodeHTML('4445645656', 'PHARMA2T');

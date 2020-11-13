@@ -1,0 +1,102 @@
+header('Content-type: text/html; charset=utf-8');
+        $url = "http://pddikti.idu.ac.id:8082/ws/live2.php";
+        $User_Agent = 'Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101 Firefox/60.0';
+
+        $request_headers[] = 'Contect-Type:application/json';
+        $request_headers[] = 'Content-type: application/json';
+        
+        $dataToken = array (
+            'act' => 'GetToken',
+            'username' => '471001',
+            'password' => '1Uh}jkSd6KSU',
+        );
+
+        $data_json = json_encode($dataToken);
+        $request_headers[] = 'Content-Length: ' . strlen($data_json);
+
+        $ch = curl_init($url);
+        // Set the url      
+        curl_setopt( $ch, CURLOPT_URL, $url );
+        curl_setopt($ch, CURLOPT_USERAGENT, $User_Agent);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $request_headers);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_json);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_ENCODING, "");
+
+        // Execute
+        $result = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        $data = json_decode($result, true);
+
+        if ($code == 200) {
+            
+            $result = json_decode($result, true);
+            $array = array($result);
+            $token = $array[0]['data']['token']; 
+
+            // DATA MAHASISWA
+                $dataMahasiswa = array (
+                    'act' => 'GetListMahasiswa',
+                    'token' => $token,
+                    'filter' => '',
+                    'limit' => '',
+                    'offset' => 0
+                );
+
+                $data_json_mahasiswa = json_encode($dataMahasiswa);
+                $request_headers_m[] = 'Contect-Type:application/json';
+                $request_headers_m[] = 'Content-type: application/json';  
+                $request_headers_m[] = 'Content-Length: ' . strlen($data_json_mahasiswa);
+
+                $ch = curl_init($url);
+                
+                curl_setopt( $ch, CURLOPT_URL, $url );
+                curl_setopt($ch, CURLOPT_USERAGENT, $User_Agent);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $request_headers_m);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_json_mahasiswa);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_ENCODING, "");
+                
+                $result_mahasiswa = curl_exec($ch);
+                $codeM = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+                $data_mahasiswa = json_decode($result_mahasiswa, true);
+
+            // DATA DOSEN
+                $dataDosen = array (
+                    'act' => 'GetListDosen',
+                    'token' => $token,
+                    'filter' => '',
+                    'limit' => '',
+                    'offset' => 0
+                );
+
+                $data_json_dosen = json_encode($dataDosen);
+                $request_headers_d[] = 'Contect-Type:application/json';
+                $request_headers_d[] = 'Content-type: application/json';  
+                $request_headers_d[] = 'Content-Length: ' . strlen($data_json_dosen);
+
+                $chd = curl_init($url);
+                
+                curl_setopt($chd, CURLOPT_URL, $url );
+                curl_setopt($chd, CURLOPT_USERAGENT, $User_Agent);
+                curl_setopt($chd, CURLOPT_HTTPHEADER, $request_headers_d);
+                curl_setopt($chd, CURLOPT_CUSTOMREQUEST, 'POST');
+                curl_setopt($chd, CURLOPT_POSTFIELDS, $data_json_dosen);
+                curl_setopt($chd, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($chd, CURLOPT_ENCODING, "");
+
+                $result_dosen = curl_exec($chd);
+                $codeD = curl_getinfo($chd, CURLINFO_HTTP_CODE);
+                curl_close($chd);
+                $data_dosen = json_decode($result_dosen, true);
+
+        } else {
+            echo 'error ' . $code;
+        }
+
+        $listMahasiswa = $data_mahasiswa['data'];
+        $listDosen = $data_dosen['data'];
