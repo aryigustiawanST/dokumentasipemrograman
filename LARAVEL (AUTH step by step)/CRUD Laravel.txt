@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 use File;
 
-
 class InstansiController extends Controller
 {
     public function index() {
@@ -82,10 +81,11 @@ class InstansiController extends Controller
         return redirect('admin/instansi')->with('success', 'Successfully Updated');
     }
     
-    public function hapus($id)
+    public function delete($id)
     {
-        DB::table('instansi_core')->where('id',$id)->delete();
-        return redirect('admin/instansi')->with('success', 'Successfully Delete');
-    }
+        $findData = DB::table('tag_slideshow')->where('id',$id)->first();
+        DB::table('tag_slideshow')->where('id',$id)->delete();
+        File::delete(public_path('frontend/images/slideshow/'.$findData->slide_image)); 
+        return redirect('admin/slide')->with('messages', 'Successfully Delete');
 
 }

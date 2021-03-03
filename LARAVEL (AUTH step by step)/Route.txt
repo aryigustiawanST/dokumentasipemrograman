@@ -1,25 +1,21 @@
 LARAVEL
 
-Route::group(['prefix' => 'kartikahospital'], function () {
-    Route::get('/', 'CovidRegisterController@index');
-    Route::post('/store','CovidRegisterController@store');
+Route::group(['prefix' => 'admin'], function () {
+    Route::get('/about', [App\Http\Controllers\GeneralController::class, 'about'])->name('about');
+    Route::post('/aboutupdate', [App\Http\Controllers\GeneralController::class, 'aboutstore'])->name('aboutupdate');
     
-    Route::post('/storepelengkap','CovidRegisterController@storepelengkap');
-    Route::get('/formpelengkap/{registerid}','CovidRegisterController@formpelengkap');
+    Route::get('/contact',[App\Http\Controllers\GeneralController::class, 'contact'])->name('contact');
+    Route::post('/contactupdate', [App\Http\Controllers\GeneralController::class, 'contactupdate'])->name('contactupdate');
+});
+DI API.PHP (LARAVEL)
 
-    Route::get('/status','CovidRegisterController@status');
-
-    Route::get('/add','CovidRegisterController@add');
-    Route::get('/edit/{id}','CovidRegisterController@edit');
-    Route::post('/update','CovidRegisterController@update');
-    Route::get('/delete/{id}','CovidRegisterController@delete');
-
-    Route::get('/filepdf/{idktp}','CovidRegisterController@filepdf');
+Route::prefix('v1')->group(function () {
+    Route::post('login', 'App\Http\Controllers\ServiceController@login');
 });
 
 
-LUMEN
 
+LUMEN
 
 Route::group(['prefix' => 'service'], function () {
     Route::get('alldata', ['uses' => 'ServiceController@alldata']);

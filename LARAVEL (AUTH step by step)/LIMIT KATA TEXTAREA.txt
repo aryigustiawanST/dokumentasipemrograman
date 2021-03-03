@@ -1,0 +1,21 @@
+<textarea class="form-control" rows="6" name="abstract" id="limit_abstract"></textarea>
+
+<script>
+		function check_words(e) {
+		var BACKSPACE   = 8;
+		var DELETE      = 46;
+		var MAX_WORDS   = 501;
+		var valid_keys  = [BACKSPACE, DELETE];
+		var words       = this.value.split(' ');
+		
+		if (words.length >= 501 && valid_keys.indexOf(e.keyCode) == -1) {
+			e.preventDefault();
+			words.length = 501;
+			this.value = words.join(' ');
+		}
+		}
+
+		var textarea = document.getElementById('limit_abstract');
+		textarea.addEventListener('keydown', check_words);
+		textarea.addEventListener('keyup', check_words);
+	</script>

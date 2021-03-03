@@ -1,0 +1,44 @@
+DATA TABLE
+
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#ag-table').DataTable();
+        } );
+    </script>
+
+<table id="ag-table" class="display" style="width:100%">
+
+===========================================
+
+ROW() REMOVE()
+
+var table = $('#example').DataTable();
+ 
+$('#example tbody').on( 'click', 'img.icon-delete', function () {
+    table
+        .row( $(this).parents('tr') )
+        .remove()
+        .draw();
+} );
+
+
+
+
+
+var table1 = $('#example1').DataTable();
+var table2 = $('#example2').DataTable();
+ 
+$('#example tbody').on( 'click', 'img.icon-transfer', function () {
+    var row = table1.row( $(this).parents('tr') );
+    var rowNode = row.node();
+    row.remove();
+ 
+    table2
+        .row.add( rowNode )
+        .draw();
+} );

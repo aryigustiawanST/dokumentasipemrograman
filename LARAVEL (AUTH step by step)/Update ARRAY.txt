@@ -8,3 +8,20 @@ for ($i=0; $i < count($request->id); $i++) {
      
             ]);
         }
+
+
+WITH EXCLUDE NUMBER
+
+if($request->status == 1) {
+         
+            $exclude = array($request->id);
+            for($i = 1; $i < 11; $i++) {
+                if (in_array($i, $exclude)) continue;
+                DB::table('menu_core')
+                    ->where('id', $i)
+                    ->update([
+                        'status' => 0,        
+                ]);                                
+            }
+        
+        }

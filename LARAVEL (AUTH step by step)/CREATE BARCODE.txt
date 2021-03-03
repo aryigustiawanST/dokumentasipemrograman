@@ -39,7 +39,7 @@ echo DNS1D::getBarcodeHTML('4445645656', 'S25');
 echo DNS1D::getBarcodeHTML('4445645656', 'S25+');
 echo DNS1D::getBarcodeHTML('4445645656', 'I25');
 echo DNS1D::getBarcodeHTML('4445645656', 'I25+');
-echo DNS1D::getBarcodeHTML('4445645656', 'C128');
+echo DNS1D::getBarcodeHTML('4445645656', 'C128'); --> yang dipake
 echo DNS1D::getBarcodeHTML('4445645656', 'C128A');
 echo DNS1D::getBarcodeHTML('4445645656', 'C128B');
 echo DNS1D::getBarcodeHTML('4445645656', 'C128C');

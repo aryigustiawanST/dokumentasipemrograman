@@ -12,6 +12,9 @@ php artisan vendor:publish --provider="Maatwebsite\Excel\ExcelServiceProvider"
 
 php artisan make:export SiswaExport --model=Siswa
 
+LUMEN --> bootstrap/app.php:
+$app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
+
 =============================================================================
 
 Edit Source di: app/Export/SiswaExport.php

@@ -1,3 +1,30 @@
+SELECT WITHOUT ARRAY IN SUBKEY
+
+{"tracking": {"kota": "Ternate Warehouse", "tanggal": "14-11-2020 19:00:00", "keterangan": "Barang sedang diproses"}}
+
+SELECT status_pengiriman->'tracking'->>'kota' as kota, status_pengiriman->'tracking'->>'keterangan' as keterangan, status_pengiriman->'tracking'->>'tanggal' as tanggal FROM core_transaksi
+
+=================================================================
+
+SELECT WITH ARRAH IN SUBKEY --> with []
+
+{"tracking": [{"kota": "Ternate Warehouse", "tanggal": "14-11-2020 19:00:00", "keterangan": "Barang sedang diproses"}, {"kota": "Ternate Warehouse", "tanggal": "14-11-2020 19:00:00", "keterangan": "Barang sedang diproses"}]}
+
+in controller:
+$tracking = app('db')->select("SELECT status_pengiriman->>'tracking' as tracking FROM core_transaksi WHERE id_transaksi = '$id'");
+        $encode = json_encode($tracking);
+        $decode = json_decode($encode);
+
+        foreach($decode as $d) {
+            $dd = $d->tracking;
+            $track = json_decode($dd, true);
+        }
+
+di view:
+nanti tinggal foreach $track as $t, --> {{ $t['kota'] }}
+
+=================================================================
+
 ONLY UPDATE DATA
 
 UPDATE user_core

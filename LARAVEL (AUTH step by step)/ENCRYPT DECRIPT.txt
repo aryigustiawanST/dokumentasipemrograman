@@ -1,0 +1,4 @@
+use Illuminate\Support\Facades\Crypt;
+
+Crypt::encrypt($parameter);
+Crypt::decrypt($id);

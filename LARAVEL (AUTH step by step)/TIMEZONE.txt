@@ -1,0 +1,20 @@
+open app/Providers/AppServiceProvider.php
+
+use Carbon\Carbon;
+
+public function boot()
+    {
+        //
+        config(['app.locale' => 'id']);
+        Carbon::setLocale('id');
+        date_default_timezone_set('Asia/Jakarta');
+    }
+
+
+open app/config/app.php
+
+tambahkan di 'aliases':
+
+'timezone' => 'Asia/Jakarta',
+'locale' => 'id',
+'faker_locale' => 'id_ID',
