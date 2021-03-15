@@ -1,0 +1,4 @@
+public $incrementing = false;
+
+
+protected $primaryKey = 'verification_token';
