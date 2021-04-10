@@ -1,0 +1,130 @@
+<?php
+
+namespace App\Exports;
+
+use App\model\allArchieve;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+
+class DownloadExport implements FromQuery, WithHeadings, ShouldAutoSize
+{
+    /**
+    * @return \Illuminate\Support\Collection
+    */
+    use Exportable;
+    public function __construct(string $tipe, string $id_stasiun, string $start, string $end) //string for String, int for integer
+    {
+        $this->tipe = $tipe;
+        $this->id_stasiun = $id_stasiun;
+        $this->start = $start;
+        $this->end = $end;
+    }
+
+    public function headings(): array
+    {
+        if($this->tipe == "T0001") {
+            
+            return [
+                'ID Stasiun', 'Nama Stasiun', 'Lattitude', 'Longitude', 'Elevasi', 'Tanggal', 'rr'
+            ];
+
+        } elseif($this->tipe == "T0002") {
+
+            return [
+                'ID Stasiun', 'Nama Stasiun', 'Lattitude', 'Longitude', 'Elevasi', 'Tanggal', 'rr', 'ws_avg', 'ws_max', 'wd_avg', 'wd_avg', 'tt_air_max', 'tt_air_avg', 'tt_air_min', 'rh_avg', 'pp_air', 'sr_avg', 'sr_max', 'nr', 'wl','tt_sea', 'tt_pan', 'ws_50cm', 'wl_pan', 'ev_pan', 'konduktivitas','ph_sea'
+            ];
+
+        } elseif($this->tipe == "T0003") {
+
+            return [
+                'ID Stasiun', 'Nama Stasiun', 'Lattitude', 'Longitude', 'Elevasi', 'Tanggal', 'rr', 'ws_avg', 'ws_max', 'wd_avg', 'wd_avg', 'tt_air_max', 'tt_air_avg','tt_air_min', 'rh_avg', 'pp_air', 'sr_avg', 'sr_max', 'nr', 'par', 'ws_2m', 'ws_50cm', 'tt_soil_min', 'tt_bs_m10', 'tt_bs_0', 'tt_bs_2', 'tt_bs_5', 'tt_bs_5', 'tt_bs_10', 'tt_bs_20', 'tt_bs_50', 'tt_bs_100', 'tt_ts_m10', 'tt_ts_0', 'tt_ts_2', 'tt_ts_5', 'tt_ts_10', 'tt_ts_20', 'tt_ts_50', 'tt_ts_100', 'sm_10', 'sm_20', 'sm_30', 'sm_40', 'sm_60', 'sm_100', 'wl_pan','ev_pan'
+            ];
+
+        } elseif($this->tipe == "T0004") {
+
+            return [
+                'ID Stasiun', 'Nama Stasiun', 'Lattitude', 'Longitude', 'Elevasi', 'Tanggal', 'tt_min_4m', 'tt_avg_4m', 'I2', 'tt_max_4m', 'rh_min_4m', 'rh_avg_4m', 'rh_max_4m', 'ws_min_4m', 'ws_avg_4m', 'ws_max_4m', 'wd_avg_4m', 'tt_min_7m', 'tt_avg_7m', 'tt_max_7m', 'rh_min_7m', 'rh_avg_7m', 'rh_max_7m', 'ws_min_7m', 'ws_avg_7m', 'ws_max_7m', 'wd_avg_7m', 'tt_min_10m', 'tt_avg_10m', 'tt_max_10m', 'rh_min_10m', 'rh_avg_10m', 'rh_max_10m', 'ws_min_10m', 'ws_avg_10m', 'ws_max_10m', 'wd_avg_10m', 'tt_4m', 'rh_4m', 'ws_4m', 'wd_4m', 'tt_7m', 'rh_7m', 'ws_7m', 'wd_7m', 'tt_10m', 'rh_10m', 'ws_10m', 'wd_10m'
+            ];
+
+        } elseif($this->tipe == "T0010") {
+
+            return [
+                'ID Stasiun', 'Nama Stasiun', 'Lattitude', 'Longitude', 'Elevasi', 'Tanggal', 'diffuse_rad_round', 'dni_rad_round', 'global_rad_round', 'reflected_rad_round', 'nett_rad_round', 'sunshine_minutes', 'sundir_altitude', 'sundir_azimuth'
+            ];
+
+        } elseif($this->tipe == "T0011") {
+
+            return [
+                'ID Stasiun', 'Nama Stasiun', 'Lattitude', 'Longitude', 'Elevasi', 'Tanggal', 'rh', 'hail', 'rain', 'temp', 'speed', 'wd_max', 'wd_min', 'ws_max', 'ws_min', 'arg_occ', 'bearing', 'wd_mean', 'ws_mean', 'dewpoint', 'latitude', 'pressure', 'wd_max10', 'wd_min10', 'ws_max10', 'ws_min10', 'c_decline', 'longitude', 'wd_mean10', 'ws_mean10', 'time_epoch', 'c_directions', 'pressure_msl'
+            ];
+
+        } 
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class    => function(AfterSheet $event) {
+                $cellRange = 'A1:Z1'; // All headers
+                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(10);                
+            },
+        ];
+    }
+
+    public function query() {
+
+        // echo $this->tipe;die;
+        if($this->tipe == "T0001") {
+
+            $all = allArchieve::query()
+            ->select('id_station', 'name_station', 'latt_station', 'long_station', 'elv_station', 'tanggal', 'rr')
+            ->where('id_station', $this->id_stasiun)
+            ->whereBetween('tanggal', [$this->start, $this->end]);
+
+        } elseif($this->tipe == "T0002") {
+
+            $all = allArchieve::query()
+            ->select('id_station', 'name_station', 'latt_station', 'long_station', 'elv_station', 'tanggal', 'rr', 'ws_avg', 'ws_max', 'wd_avg', 'wd_avg', 'tt_air_max', 'tt_air_avg', 'tt_air_min', 'rh_avg', 'pp_air', 'sr_avg', 'sr_max', 'nr', 'wl','tt_sea', 'tt_pan', 'ws_50cm', 'wl_pan', 'ev_pan', 'konduktivitas','ph_sea')
+            ->where('id_station', $this->id_stasiun)
+            ->whereBetween('tanggal', [$this->start, $this->end]);
+
+        } elseif($this->tipe == "T0003")  {
+
+            $all = allArchieve::query()
+            ->select('id_station', 'name_station', 'latt_station', 'long_station', 'elv_station', 'tanggal', 'rr', 'ws_avg', 'ws_max', 'wd_avg', 'wd_avg', 'tt_air_max', 'tt_air_avg','tt_air_min', 'rh_avg', 'pp_air', 'sr_avg', 'sr_max', 'nr', 'par', 'ws_2m', 'ws_50cm', 'tt_soil_min', 'tt_bs_m10', 'tt_bs_0', 'tt_bs_2', 'tt_bs_5', 'tt_bs_5', 'tt_bs_10', 'tt_bs_20', 'tt_bs_50', 'tt_bs_100', 'tt_ts_m10', 'tt_ts_0', 'tt_ts_2', 'tt_ts_5', 'tt_ts_10', 'tt_ts_20', 'tt_ts_50', 'tt_ts_100', 'sm_10', 'sm_20', 'sm_30', 'sm_40', 'sm_60', 'sm_100', 'wl_pan','ev_pan')
+            ->where('id_station', $this->id_stasiun)
+            ->whereBetween('tanggal', [$this->start, $this->end]);
+
+        } elseif($this->tipe == "T0004")  {
+
+            $all = allArchieve::query()
+            ->select('id_station', 'name_station', 'latt_station', 'long_station', 'elv_station', 'tanggal', 'tt_min_4m', 'tt_avg_4m', 'I2', 'tt_max_4m', 'rh_min_4m', 'rh_avg_4m', 'rh_max_4m', 'ws_min_4m', 'ws_avg_4m', 'ws_max_4m', 'wd_avg_4m', 'tt_min_7m', 'tt_avg_7m', 'tt_max_7m', 'rh_min_7m', 'rh_avg_7m', 'rh_max_7m', 'ws_min_7m', 'ws_avg_7m', 'ws_max_7m', 'wd_avg_7m', 'tt_min_10m', 'tt_avg_10m', 'tt_max_10m', 'rh_min_10m', 'rh_avg_10m', 'rh_max_10m', 'ws_min_10m', 'ws_avg_10m', 'ws_max_10m', 'wd_avg_10m', 'tt_4m', 'rh_4m', 'ws_4m', 'wd_4m', 'tt_7m', 'rh_7m', 'ws_7m', 'wd_7m', 'tt_10m', 'rh_10m', 'ws_10m', 'wd_10m')
+            ->where('id_station', $this->id_stasiun)
+            ->whereBetween('tanggal', [$this->start, $this->end]);
+
+        } elseif($this->tipe == "T0010") {
+
+            $all = allArchieve::query()
+            ->select('id_station', 'name_station', 'latt_station', 'long_station', 'elv_station', 'tanggal', 'diffuse_rad_round', 'dni_rad_round', 'global_rad_round', 'reflected_rad_round', 'nett_rad_round', 'sunshine_minutes', 'sundir_altitude', 'sundir_azimuth')
+            ->where('id_station', $this->id_stasiun)
+            ->whereBetween('tanggal', [$this->start, $this->end]);
+
+        } elseif($this->tipe == "T0011") {
+
+            $all = allArchieve::query()
+            ->select('id_station', 'name_station', 'latt_station', 'long_station', 'elv_station', 'tanggal', 'rh', 'hail', 'rain', 'temp', 'speed', 'wd_max', 'wd_min', 'ws_max', 'ws_min', 'arg_occ', 'bearing', 'wd_mean', 'ws_mean', 'dewpoint', 'latitude', 'pressure', 'wd_max10', 'wd_min10', 'ws_max10', 'ws_min10', 'c_decline', 'longitude', 'wd_mean10', 'ws_mean10', 'time_epoch', 'c_directions', 'pressure_msl')
+            ->where('id_station', $this->id_stasiun)
+            ->whereBetween('tanggal', [$this->start, $this->end]);
+
+        }    
+        
+        return $all;
+    }
+}

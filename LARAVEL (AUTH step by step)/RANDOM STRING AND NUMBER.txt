@@ -5,3 +5,9 @@ $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $randomString .= $characters[rand(0, $charactersLength - 1)];
     }
     return $randomString;
+
+
+
+4 DIGIT
+mt_rand(1000,9999);
+rand(1000,9999);

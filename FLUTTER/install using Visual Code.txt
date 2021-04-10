@@ -1,0 +1,42 @@
+Invoke View > Command Palette.
+Type “flutter”, and select the Flutter: New Application Project.
+Enter a project name, such as myapp, and press Enter.
+Create or select the parent directory for the new project folder.
+Wait for project creation to complete and the main.dart file to appear.
+
+
+NOTE:
+A physical device (Android or iOS) connected to your computer and set to developer mode
+The iOS simulator (requires installing Xcode tools)
+The Android emulator (requires setup in Android Studio)
+A browser (Chrome is required for debugging)
+
+
+
+
+CODE HELLO WORLD: lib/main.dart (copypaste)
+
+// Copyright 2018 The Flutter team. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Welcome to Flutter',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Welcome to Flutter'),
+        ),
+        body: Center(
+          child: Text('Hello World'),
+        ),
+      ),
+    );
+  }
+}

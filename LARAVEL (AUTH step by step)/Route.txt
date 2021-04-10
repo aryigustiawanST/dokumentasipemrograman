@@ -7,6 +7,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/contact',[App\Http\Controllers\GeneralController::class, 'contact'])->name('contact');
     Route::post('/contactupdate', [App\Http\Controllers\GeneralController::class, 'contactupdate'])->name('contactupdate');
 });
+
+
+
 DI API.PHP (LARAVEL)
 
 Route::prefix('v1')->group(function () {
